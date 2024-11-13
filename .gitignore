@@ -1,0 +1,9 @@
+build/
+.vscode/
+.idea/
+cmake-build-debug/
+
+.cifuzz-*/
+*fuzz*_inputs
+
+lcov.info

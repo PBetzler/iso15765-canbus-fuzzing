@@ -1,38 +1,44 @@
-cmake_minimum_required(VERSION 3.10)
-project(iso15765_canbus C)
+cmake_minimum_required(VERSION 3.16)
 
-set(SRC_DIR src)
-set(LIB_DIR lib)
-set(EXM_DIR exm)
+project(cpp-demo)
 
-include_directories(${SRC_DIR} ${LIB_DIR} ${EXM_DIR})
+# Export compilation database
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Add the dependency library (libiqueue)
-file(GLOB LIB_FILES "${LIB_DIR}/*.c")
-add_library(iqueue STATIC ${LIB_FILES})
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add the main library (libiso15765)
-file(GLOB SRC_FILES "${SRC_DIR}/*.c")
-add_library(iso15765 STATIC ${SRC_FILES})
-target_link_libraries(iso15765 PRIVATE iqueue)
+include(FetchContent)
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+FetchContent_MakeAvailable(googletest)
 
-# Add the example executable
-file(GLOB EXM_FILES "${EXM_DIR}/*.c")
-add_executable(example ${EXM_FILES})
-target_link_libraries(example PRIVATE iso15765 iqueue)
+find_package(cifuzz NO_SYSTEM_ENVIRONMENT_PATH)
+enable_testing()
+include(GoogleTest)
+enable_fuzz_testing()
 
-set_target_properties(iqueue iso15765 example PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build"
+add_library(lib_iso15765
+    ${CMAKE_SOURCE_DIR}/lib/lib_iqueue.h
+    ${CMAKE_SOURCE_DIR}/lib/lib_iqueue.c
+    ${CMAKE_SOURCE_DIR}/src/lib_iso15765.c
+    ${CMAKE_SOURCE_DIR}/src/lib_iso15765.h
 )
 
-if(MSVC)
-    target_compile_options(iqueue PRIVATE /W4)
-    target_compile_options(iso15765 PRIVATE /W4)
-    target_compile_options(example PRIVATE /W4)
-else()
-    target_compile_options(iqueue PRIVATE -Wall -Wextra)
-    target_compile_options(iso15765 PRIVATE -Wall -Wextra)
-    target_compile_options(example PRIVATE -Wall -Wextra)
-endif()
+target_include_directories(lib_iso15765 PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/lib
+)
+
+add_executable(example
+    ${CMAKE_SOURCE_DIR}/exm/ISO15765Development.c
+)
+
+target_link_libraries(example
+    lib_iso15765
+)
+
+add_subdirectory(fuzz-tests)
+add_subdirectory(cifuzz-spark)
