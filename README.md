@@ -1,6 +1,15 @@
 # ISO15765-2 CANBus TP 
 ![C/C++ CI](https://github.com/devcoons/iso15765-canbus/workflows/C/C++%20CI/badge.svg)  [![Codacy Badge](https://app.codacy.com/project/badge/Grade/5a80fc004df744e888729e512eec1fda)](https://app.codacy.com/gh/devcoons/iso15765-canbus/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
+
+Example fuzzing setup for ISO15765-2 CANBus TP.
+
+To run cifuzz spark automated use the command:
+```sh
+cifuzz spark --candidate-excludes "**/.cifuzz/**" --candidate-excludes "**/fuzz-tests/**"
+```
+
+
 *Compiler flags: **-O3 -Wfatal-errors -Wall -std=c11***
 
 An implementation of the **ISO15765-2 (ISO-TP)** protocol in a platform agnostic C library. The library interacts in a transparent way with the lower ISO layers which means that the user must define the connection for the reception and the transmission of the CANBus frames. In this way you have a complete control and reusability of this library in different platforms. This library can support **UDS**, **OBDII** and any other application layer protocol that requires ISO15765-2 TP.

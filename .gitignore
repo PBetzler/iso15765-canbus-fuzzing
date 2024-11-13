@@ -3,7 +3,8 @@ build/
 .idea/
 cmake-build-debug/
 
-.cifuzz-*/
+*cifuzz*/
 *fuzz*_inputs
+.sarif/
 
 lcov.info

@@ -6,3 +6,4 @@
 # )
 # target_link_libraries({{ .FuzzTestName }} PRIVATE lib_iso15765)
 # cifuzz:build-template:end
+
