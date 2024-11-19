@@ -10,19 +10,26 @@
 add_compile_options(-fsanitize=address,undefined)
 add_link_options(-fsanitize=address,undefined)
 
-add_fuzz_test(fuzz_iqueue_init 
-    fuzz_iqueue_init.cpp 
-    TEST_FRAMEWORK 
-    GTEST
+foreach(TestType IN ITEMS
+    fuzz_iqueue_init
+    fuzz_iqueue_init_3
 )
 
-target_include_directories(fuzz_iqueue_init
-    PRIVATE
-    ../src
-    ../lib
-)
+    add_fuzz_test(${TestType} 
+        ${TestType}.cpp 
+        TEST_FRAMEWORK 
+        GTEST
+    )
 
-target_link_libraries(fuzz_iqueue_init
-    lib_iso15765 
-    GTest::gtest
-)
+    target_include_directories(${TestType}
+        PRIVATE
+        ../src
+        ../lib
+    )
+
+    target_link_libraries(${TestType}
+        lib_iso15765 
+        GTest::gtest
+    )
+
+endforeach(TestType )
