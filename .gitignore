@@ -8,3 +8,12 @@ cmake-build-debug/
 .sarif/
 
 lcov.info
+
+
+!.cifuzz-findings/
+
+.cifuzz-findings/*
+!.cifuzz-findings/flying_anemone/
+.cifuzz-findings/flying_anemone/.lock
+!.cifuzz-findings/nerdy_lion/
+.cifuzz-findings/nerdy_lion/.lock
