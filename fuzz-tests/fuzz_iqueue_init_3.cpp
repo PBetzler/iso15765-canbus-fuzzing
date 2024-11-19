@@ -54,7 +54,7 @@ FUZZ_TEST(const uint8_t *data, size_t size) {
   // Send the request
   iso15765_send(&instance, &req);
 
-  for (int i = 0; i < fdp.ConsumeIntegralInRange(0,500); i++) {
+  for (int i = 0; i < fdp.ConsumeIntegralInRange(1,500); i++) {
     // Process the instance
     iso15765_process(&instance);
   }
