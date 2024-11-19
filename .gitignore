@@ -12,7 +12,7 @@ lcov.info
 !.cifuzz-findings/
 
 .cifuzz-findings/*
-!.cifuzz-findings/sweet_bonobo/
-.cifuzz-findings/sweet_bonobo/.lock
-!.cifuzz-findings/youthful_wallaby/
-.cifuzz-findings/youthful_wallaby/.lock
+!.cifuzz-findings/pedantic_hamster/
+.cifuzz-findings/pedantic_hamster/.lock
+!.cifuzz-findings/thoughtful_cheetah/
+.cifuzz-findings/thoughtful_cheetah/.lock
