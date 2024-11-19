@@ -29,7 +29,7 @@ build-system: cmake
 ## See https://llvm.org/docs/LibFuzzer.html#options
 engine-args:
   - -use_value_profile=1
-# - -rss_limit_mb=4096
+  - -rss_limit_mb=8192
 
 ## Maximum time to run all fuzz tests. The default is to run for 10 minutes.
 max-fuzzing-duration: 30m
