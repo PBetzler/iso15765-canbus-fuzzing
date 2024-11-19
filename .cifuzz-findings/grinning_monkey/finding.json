@@ -1,0 +1,71 @@
+{
+  "name": "grinning_monkey",
+  "type": "CRASH",
+  "input_data": "YHx0H3T/QP///////////wB0dAYAALxpR70KADUp8gAAdHQf/xoLAAALAAC8aUe9CgA1KVAAAHR0H/8aCwAACwC7dP/bGrvbR70KADZQAADV1dXV1dXV1dXV1XR0H/8aC5sACwC7dP/bGkUtKBpgfHQfdP9A////////////AHR0BgAAvGlHvQoANSkAAB90/1B0GgsAAAsAALxpR70KADUpUAIAdHQf/xoLAAARAAAA/9sau9tHvQoANlAAAHR0H/8aC5sACwC7dP/bGkUtKBo=",
+  "logs": [
+    "==322768==ERROR: AddressSanitizer: SEGV on unknown address 0x5aa9a3c73000 (pc 0x5aa9a30bc760 bp 0x7ffcee97cf20 sp 0x7ffcee97c6d8 T0)",
+    "==322768==The signal is caused by a WRITE memory access.",
+    "    #0 0x5aa9a30bc760 in __sanitizer_internal_memmove (/home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/.cifuzz/build/libfuzzer/address+undefined/fuzz-tests/fuzz_iso15765+0x173760) (BuildId: 9dd02cf8bd0fde43f31c85d35b600d36615ce6b5)",
+    "    #1 0x5aa9a30a2c1a in __asan_memmove (/home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/.cifuzz/build/libfuzzer/address+undefined/fuzz-tests/fuzz_iso15765+0x159c1a) (BuildId: 9dd02cf8bd0fde43f31c85d35b600d36615ce6b5)",
+    "    #2 0x5aa9a30f122d in n_pdu_unpack_dt /home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/src/lib_iso15765.c",
+    "    #3 0x5aa9a30f122d in n_pdu_unpack /home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/src/lib_iso15765.c:471:2",
+    "    #4 0x5aa9a30f122d in iso15765_process_in /home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/src/lib_iso15765.c:763:6",
+    "    #5 0x5aa9a30ef837 in iso15765_process /home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/src/lib_iso15765.c:1020:11",
+    "    #6 0x5aa9a30e9f8d in LLVMFuzzerTestOneInputNoReturn(unsigned char const*, unsigned long) /home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/fuzz-tests/fuzz_iso15765.cpp",
+    "    #7 0x5aa9a30eac17 in LLVMFuzzerTestOneInput /home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/fuzz-tests/fuzz_iso15765.cpp:73:1",
+    "    #8 0x5aa9a2ff08b4 in fuzzer::Fuzzer::ExecuteCallback(unsigned char const*, unsigned long) (/home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/.cifuzz/build/libfuzzer/address+undefined/fuzz-tests/fuzz_iso15765+0xa78b4) (BuildId: 9dd02cf8bd0fde43f31c85d35b600d36615ce6b5)",
+    "    #9 0x5aa9a2feffa9 in fuzzer::Fuzzer::RunOne(unsigned char const*, unsigned long, bool, fuzzer::InputInfo*, bool, bool*) (/home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/.cifuzz/build/libfuzzer/address+undefined/fuzz-tests/fuzz_iso15765+0xa6fa9) (BuildId: 9dd02cf8bd0fde43f31c85d35b600d36615ce6b5)",
+    "    #10 0x5aa9a2ff1795 in fuzzer::Fuzzer::MutateAndTestOne() (/home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/.cifuzz/build/libfuzzer/address+undefined/fuzz-tests/fuzz_iso15765+0xa8795) (BuildId: 9dd02cf8bd0fde43f31c85d35b600d36615ce6b5)",
+    "    #11 0x5aa9a2ff22f5 in fuzzer::Fuzzer::Loop(std::vector\u003cfuzzer::SizedFile, std::allocator\u003cfuzzer::SizedFile\u003e\u003e\u0026) (/home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/.cifuzz/build/libfuzzer/address+undefined/fuzz-tests/fuzz_iso15765+0xa92f5) (BuildId: 9dd02cf8bd0fde43f31c85d35b600d36615ce6b5)",
+    "    #12 0x5aa9a2fdf5cf in fuzzer::FuzzerDriver(int*, char***, int (*)(unsigned char const*, unsigned long)) (/home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/.cifuzz/build/libfuzzer/address+undefined/fuzz-tests/fuzz_iso15765+0x965cf) (BuildId: 9dd02cf8bd0fde43f31c85d35b600d36615ce6b5)",
+    "    #13 0x5aa9a3009c56 in main (/home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/.cifuzz/build/libfuzzer/address+undefined/fuzz-tests/fuzz_iso15765+0xc0c56) (BuildId: 9dd02cf8bd0fde43f31c85d35b600d36615ce6b5)",
+    "    #14 0x7f7834e2a1c9 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58:16",
+    "    #15 0x7f7834e2a28a in __libc_start_main ../csu/libc-start.c:360:3",
+    "    #16 0x5aa9a2fd45b4 in _start (/home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/.cifuzz/build/libfuzzer/address+undefined/fuzz-tests/fuzz_iso15765+0x8b5b4) (BuildId: 9dd02cf8bd0fde43f31c85d35b600d36615ce6b5)",
+    "",
+    "AddressSanitizer can not provide additional info.",
+    "SUMMARY: AddressSanitizer: SEGV (/home/philip/Code/Customer-Projects/Garrett/iso15765-canbus-fuzzing/.cifuzz/build/libfuzzer/address+undefined/fuzz-tests/fuzz_iso15765+0x173760) (BuildId: 9dd02cf8bd0fde43f31c85d35b600d36615ce6b5) in __sanitizer_internal_memmove==322768==ABORTING",
+    "MS: 4 InsertRepeatedBytes-ChangeByte-CMP-ChangeBit- DE: \"\\021\\000\\000\\000\"-; base unit: e2aa1bf51906a336fc0bcc1eddbf0e8a7c0a39a9",
+    "0x60,0x7c,0x74,0x1f,0x74,0xff,0x40,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x0,0x74,0x74,0x6,0x0,0x0,0xbc,0x69,0x47,0xbd,0xa,0x0,0x35,0x29,0xf2,0x0,0x0,0x74,0x74,0x1f,0xff,0x1a,0xb,0x0,0x0,0xb,0x0,0x0,0xbc,0x69,0x47,0xbd,0xa,0x0,0x35,0x29,0x50,0x0,0x0,0x74,0x74,0x1f,0xff,0x1a,0xb,0x0,0x0,0xb,0x0,0xbb,0x74,0xff,0xdb,0x1a,0xbb,0xdb,0x47,0xbd,0xa,0x0,0x36,0x50,0x0,0x0,0xd5,0xd5,0xd5,0xd5,0xd5,0xd5,0xd5,0xd5,0xd5,0xd5,0xd5,0x74,0x74,0x1f,0xff,0x1a,0xb,0x9b,0x0,0xb,0x0,0xbb,0x74,0xff,0xdb,0x1a,0x45,0x2d,0x28,0x1a,0x60,0x7c,0x74,0x1f,0x74,0xff,0x40,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x0,0x74,0x74,0x6,0x0,0x0,0xbc,0x69,0x47,0xbd,0xa,0x0,0x35,0x29,0x0,0x0,0x1f,0x74,0xff,0x50,0x74,0x1a,0xb,0x0,0x0,0xb,0x0,0x0,0xbc,0x69,0x47,0xbd,0xa,0x0,0x35,0x29,0x50,0x2,0x0,0x74,0x74,0x1f,0xff,0x1a,0xb,0x0,0x0,0x11,0x0,0x0,0x0,0xff,0xdb,0x1a,0xbb,0xdb,0x47,0xbd,0xa,0x0,0x36,0x50,0x0,0x0,0x74,0x74,0x1f,0xff,0x1a,0xb,0x9b,0x0,0xb,0x0,0xbb,0x74,0xff,0xdb,0x1a,0x45,0x2d,0x28,0x1a,",
+    "`|t\\037t\\377@\\377\\377\\377\\377\\377\\377\\377\\377\\377\\000tt\\006\\000\\000\\274iG\\275\\012\\0005)\\362\\000\\000tt\\037\\377\\032\\013\\000\\000\\013\\000\\000\\274iG\\275\\012\\0005)P\\000\\000tt\\037\\377\\032\\013\\000\\000\\013\\000\\273t\\377\\333\\032\\273\\333G\\275\\012\\0006P\\000\\000\\325\\325\\325\\325\\325\\325\\325\\325\\325\\325\\325tt\\037\\377\\032\\013\\233\\000\\013\\000\\273t\\377\\333\\032E-(\\032`|t\\037t\\377@\\377\\377\\377\\377\\377\\377\\377\\377\\377\\000tt\\006\\000\\000\\274iG\\275\\012\\0005)\\000\\000\\037t\\377Pt\\032\\013\\000\\000\\013\\000\\000\\274iG\\275\\012\\0005)P\\002\\000tt\\037\\377\\032\\013\\000\\000\\021\\000\\000\\000\\377\\333\\032\\273\\333G\\275\\012\\0006P\\000\\000tt\\037\\377\\032\\013\\233\\000\\013\\000\\273t\\377\\333\\032E-(\\032",
+    "artifact_prefix='/tmp/libfuzzer-out-797310617/'; Test unit written to .cifuzz-findings/grinning_monkey/crashing-input",
+    "Base64: YHx0H3T/QP///////////wB0dAYAALxpR70KADUp8gAAdHQf/xoLAAALAAC8aUe9CgA1KVAAAHR0H/8aCwAACwC7dP/bGrvbR70KADZQAADV1dXV1dXV1dXV1XR0H/8aC5sACwC7dP/bGkUtKBpgfHQfdP9A////////////AHR0BgAAvGlHvQoANSkAAB90/1B0GgsAAAsAALxpR70KADUpUAIAdHQf/xoLAAARAAAA/9sau9tHvQoANlAAAHR0H/8aC5sACwC7dP/bGkUtKBo="
+  ],
+  "details": "SEGV on unknown address 0x5aa9a3c73000 (pc 0x5aa9a30bc760 bp 0x7ffcee97cf20 sp 0x7ffcee97c6d8 T0)",
+  "more_details": {
+    "id": "segmentation_fault"
+  },
+  "created_at": "2024-11-19T17:27:39.473147349+01:00",
+  "input_file": ".cifuzz-findings/grinning_monkey/crashing-input",
+  "stack_trace": [
+    {
+      "SourceFile": "src/lib_iso15765.c",
+      "Line": 471,
+      "Column": 2,
+      "FrameNumber": 3,
+      "Function": "n_pdu_unpack"
+    },
+    {
+      "SourceFile": "src/lib_iso15765.c",
+      "Line": 763,
+      "Column": 6,
+      "FrameNumber": 4,
+      "Function": "iso15765_process_in"
+    },
+    {
+      "SourceFile": "src/lib_iso15765.c",
+      "Line": 1020,
+      "Column": 11,
+      "FrameNumber": 5,
+      "Function": "iso15765_process"
+    },
+    {
+      "SourceFile": "fuzz-tests/fuzz_iso15765.cpp",
+      "Line": 73,
+      "Column": 1,
+      "FrameNumber": 7,
+      "Function": "LLVMFuzzerTestOneInput"
+    }
+  ],
+  "fuzz_test": "fuzz_iso15765"
+}

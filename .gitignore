@@ -16,3 +16,5 @@ lcov.info
 .cifuzz-findings/pedantic_hamster/.lock
 !.cifuzz-findings/thoughtful_cheetah/
 .cifuzz-findings/thoughtful_cheetah/.lock
+!.cifuzz-findings/grinning_monkey/
+.cifuzz-findings/grinning_monkey/.lock
