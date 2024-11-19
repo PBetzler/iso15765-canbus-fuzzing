@@ -11,7 +11,7 @@ FUZZ_TEST_SETUP() {
   // One-time initialization tasks if needed
 }
 
-DEBUG_FINDING(flying_anemone)
+DEBUG_FINDING(zen_hedgehog)
 
 FUZZ_TEST(const uint8_t *data, size_t size) {
   FuzzedDataProvider fdp(data, size);
@@ -28,17 +28,6 @@ FUZZ_TEST(const uint8_t *data, size_t size) {
 
   // Initialize the instance
   iso15765_init(&instance);
-
-  // Create a canbus_frame_t and initialize it with fuzzed data
-  canbus_frame_t frame;
-  memset(&frame, 0, sizeof(canbus_frame_t));
-  frame.fr_format = static_cast<cbus_fr_format>(fdp.ConsumeIntegral<uint8_t>());
-  frame.id = fdp.ConsumeIntegral<uint32_t>();
-  frame.dlc = fdp.ConsumeIntegral<uint8_t>();
-  fdp.ConsumeData(frame.dt, sizeof(frame.dt));
-
-  // Enqueue the frame
-  // iso15765_enqueue(&instance, &frame);
 
   // Create a n_req_t and initialize it with fuzzed data
   n_req_t req;
