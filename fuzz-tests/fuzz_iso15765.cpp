@@ -8,7 +8,6 @@
 extern "C" {
   #include "lib_iso15765.h"
 }
-static uint64_t number_of_fuzz_test_execution;
 static FuzzedDataProvider *gFDP;
 
 void SetFDP(FuzzedDataProvider *fuzzed_data_provider) {
@@ -23,7 +22,6 @@ static uint32_t last_ms_value;
 
 FUZZ_TEST_SETUP() {
   // One-time initialization tasks if needed
-  number_of_fuzz_test_execution = 0;
   last_ms_value = 0;
 }
 
@@ -78,10 +76,7 @@ FUZZ_TEST(const uint8_t *data, size_t size) {
   FuzzedDataProvider fdp(data, size);
   SetFDP(&fdp);
 
-  int hello[1];
-  memset(&hello, 0, 10);
-
-  // Create an instance of iso15765_t and initialize it with fuzzed data
+  // Create a sender instance of iso15765_t and initialize it with fuzzed data
  
   memset(&sender_instance, 0, sizeof(iso15765_t));
 
@@ -93,14 +88,14 @@ FUZZ_TEST(const uint8_t *data, size_t size) {
   sender_instance.clbs.indn = indn1;
   sender_instance.clbs.on_error = on_error;
 
-  // Initialize the instance
+  // Initialize the sender instance
   iso15765_init(&sender_instance);
 
 
 
 
 
-  // Create an instance of iso15765_t and initialize it with fuzzed data
+  // Create a receiver instance of iso15765_t and initialize it with fuzzed data
 
   memset(&reciever_instance, 0, sizeof(iso15765_t));
 
@@ -112,7 +107,7 @@ FUZZ_TEST(const uint8_t *data, size_t size) {
   reciever_instance.clbs.indn = indn1;
   reciever_instance.clbs.on_error = on_error;
 
-  // Initialize the instance
+  // Initialize the receiver instance
   iso15765_init(&reciever_instance);
 
   int repetitions = fdp.ConsumeIntegralInRange(1,500);

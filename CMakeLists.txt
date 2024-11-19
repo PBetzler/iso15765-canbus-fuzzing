@@ -8,6 +8,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_compile_options(-fsanitize=address,undefined -g)
+add_link_options(-fsanitize=address,undefined)
+
 include(FetchContent)
 FetchContent_Declare(
     googletest

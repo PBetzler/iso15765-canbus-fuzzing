@@ -7,11 +7,6 @@
 # target_link_libraries({{ .FuzzTestName }} PRIVATE lib_iso15765)
 # cifuzz:build-template:end
 
-add_compile_options(-fsanitize=address -g)
-add_link_options(-fsanitize=address)
-# add_compile_options(-fsanitize=address,undefined)
-# add_link_options(-fsanitize=address,undefined)
-
 foreach(TestType IN ITEMS
     fuzz_iqueue_init
     fuzz_iso15765
