@@ -343,6 +343,7 @@ inline static n_rslt n_pdu_unpack_dt(addr_md mode, n_pdu_t* n_pdu, uint8_t* dt)
 		switch (n_pdu->n_pci.pt)
 		{
 		case N_PCI_T_SF:
+			// TODO Fix stack buffer overflow caused probably by keeping state somewhere that breaks over time
 			memmove(n_pdu->dt, &dt[n_get_dt_offset(mode, N_PCI_T_SF, n_pdu->n_pci.dl)], n_pdu->n_pci.dl);
 			result = N_OK;
 			break;
@@ -489,6 +490,7 @@ inline static void signaling(signal_tp tp, n_iostream_t* strm, void(*cb)(void*),
 			sgn_indn.fr_fmt = strm->fr_fmt;
 			memmove(&sgn_indn.n_ai, &strm->pdu.n_ai, sizeof(n_ai_t));
 			memmove(&sgn_indn.n_pci, &strm->pdu.n_pci, sizeof(n_pci_t));
+			// TODO check global buffer overflow
 			memmove(&sgn_indn.msg, strm->msg, msg_sz);
 			strm->sts = N_S_IDLE;
 			cb(&sgn_indn);

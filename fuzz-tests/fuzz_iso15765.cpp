@@ -8,7 +8,7 @@
 extern "C" {
   #include "lib_iso15765.h"
 }
-
+static uint64_t number_of_fuzz_test_execution;
 static FuzzedDataProvider *gFDP;
 
 void SetFDP(FuzzedDataProvider *fuzzed_data_provider) {
@@ -19,23 +19,25 @@ FuzzedDataProvider *GetFDP() { return gFDP; }
 
 static iso15765_t sender_instance;
 static iso15765_t reciever_instance;
-
+static uint32_t last_ms_value;
 
 FUZZ_TEST_SETUP() {
   // One-time initialization tasks if needed
+  number_of_fuzz_test_execution = 0;
+  last_ms_value = 0;
 }
 
-static uint8_t send_frame(cbus_id_type id_type, uint32_t id, cbus_fr_format fr_fmt, uint8_t dlc, uint8_t* dt)
+static uint8_t sender_send_frame(cbus_id_type id_type, uint32_t id, cbus_fr_format fr_fmt, uint8_t dlc, uint8_t* dt)
 {
-  canbus_frame_t frame = { .id = id, .dlc = dlc, .id_type = id_type, .fr_format= (u_int16_t) fr_fmt };
+  canbus_frame_t frame = { .id = id, .dlc = dlc, .id_type = id_type, .fr_format= (uint16_t) fr_fmt };
   memmove(frame.dt, dt, dlc);
   iso15765_enqueue(&reciever_instance, &frame);
   return 0;
 }
 
-static uint8_t send_frame2(cbus_id_type id_type, uint32_t id, cbus_fr_format fr_fmt, uint8_t dlc, uint8_t* dt)
+static uint8_t receiver_send_frame(cbus_id_type id_type, uint32_t id, cbus_fr_format fr_fmt, uint8_t dlc, uint8_t* dt)
 {
-  canbus_frame_t frame = { .id = id, .dlc = dlc, .id_type = id_type, .fr_format= (u_int16_t)fr_fmt };
+  canbus_frame_t frame = { .id = id, .dlc = dlc, .id_type = id_type, .fr_format= (uint16_t)fr_fmt };
   memmove(frame.dt, dt, dlc);
   iso15765_enqueue(&sender_instance, &frame);
   return 0;
@@ -43,15 +45,17 @@ static uint8_t send_frame2(cbus_id_type id_type, uint32_t id, cbus_fr_format fr_
 
 static uint32_t getms()
 {
-  static uint32_t last_value;
+
+  // TODO check if this implementation is really better then just getting the data from the FDP
+  
   uint32_t new_value = GetFDP()->ConsumeIntegral<uint32_t>();
 
-  if (new_value > last_value) {
+  if (new_value > last_ms_value) {
 
-    last_value = new_value;
+    last_ms_value = new_value;
     return new_value;
   } else {
-    return last_value;
+    return last_ms_value;
   }
   // struct timeval tv;
   // gettimeofday(&tv, NULL);
@@ -66,11 +70,16 @@ static void indn1(n_indn_t* info) {
 }
 
 //  Set up the target input to debug.
-DEBUG_FINDING(crafty_flamingo)
+DEBUG_FINDING(youthful_wallaby)
 
 FUZZ_TEST(const uint8_t *data, size_t size) {
+  std::cerr << "Starting Fuzz Test " <<std::endl;
+  last_ms_value = 0;
   FuzzedDataProvider fdp(data, size);
   SetFDP(&fdp);
+
+  int hello[1];
+  memset(&hello, 0, 10);
 
   // Create an instance of iso15765_t and initialize it with fuzzed data
  
@@ -79,8 +88,8 @@ FUZZ_TEST(const uint8_t *data, size_t size) {
   // Fuzz the instance's fields with correct types
   sender_instance.fr_id_type = static_cast<cbus_id_type>(fdp.ConsumeIntegralInRange<uint8_t>(CBUS_ID_T_STANDARD, CBUS_ID_T_EXTENDED));
   sender_instance.addr_md = static_cast<addr_md>(fdp.ConsumeIntegral<uint8_t>());
-  sender_instance.clbs.send_frame = send_frame;  // Set to null to trigger the check in iso15765_init
-  sender_instance.clbs.get_ms = getms;  // Set to null to trigger the check in iso15765_init
+  sender_instance.clbs.send_frame = sender_send_frame;
+  sender_instance.clbs.get_ms = getms;
   sender_instance.clbs.indn = indn1;
   sender_instance.clbs.on_error = on_error;
 
@@ -98,8 +107,8 @@ FUZZ_TEST(const uint8_t *data, size_t size) {
   // Fuzz the instance's fields with correct types
   reciever_instance.fr_id_type = static_cast<cbus_id_type>(fdp.ConsumeIntegralInRange<uint8_t>(CBUS_ID_T_STANDARD, CBUS_ID_T_EXTENDED));
   reciever_instance.addr_md = static_cast<addr_md>(fdp.ConsumeIntegral<uint8_t>());
-  reciever_instance.clbs.send_frame = send_frame2;  // Set to null to trigger the check in iso15765_init
-  reciever_instance.clbs.get_ms = getms;  // Set to null to trigger the check in iso15765_init
+  reciever_instance.clbs.send_frame = receiver_send_frame;
+  reciever_instance.clbs.get_ms = getms;
   reciever_instance.clbs.indn = indn1;
   reciever_instance.clbs.on_error = on_error;
 

@@ -1,0 +1,44 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+    {
+        "name": "Debug Finding",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/.cifuzz/build/libfuzzer/address+undefined/fuzz-tests/fuzz_iso15765",
+        "args": [
+            //"${workspaceFolder}/.cifuzz-findings/youthful_wallaby/crashing-input", // Global Buffer overflow
+            "${workspaceFolder}/.cifuzz-findings/sweet_bonobo/crashing-input", // Stackbuffer overflow
+            "-runs=1"
+        ],
+        "cwd": "${workspaceFolder}",
+        "environment": [
+            {
+                "name": "ASAN_SYMBOLIZER_PATH",
+                "value": "/usr/bin/llvm-symbolizer"
+            },
+            {
+                "name": "NO_CIFUZZ",
+                "value": "1"
+            },
+            {
+                "name": "ASAN_OPTIONS",
+                "value": "halt_on_error=1:detect_leaks=0"
+            },
+            {
+                "name": "UBSAN_OPTIONS",
+                "value": "suppressions=${workspaceFolder}/.vscode/MyUBSan.supp"
+            }
+        ],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ]
+    }
+    ]
+}

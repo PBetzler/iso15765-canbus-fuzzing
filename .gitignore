@@ -1,5 +1,4 @@
 build/
-.vscode/
 .idea/
 cmake-build-debug/
 
@@ -13,5 +12,7 @@ lcov.info
 !.cifuzz-findings/
 
 .cifuzz-findings/*
-!.cifuzz-findings/zen_hedgehog/
-.cifuzz-findings/zen_hedgehog/.lock
+!.cifuzz-findings/sweet_bonobo/
+.cifuzz-findings/sweet_bonobo/.lock
+!.cifuzz-findings/youthful_wallaby/
+.cifuzz-findings/youthful_wallaby/.lock
