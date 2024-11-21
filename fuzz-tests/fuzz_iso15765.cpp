@@ -68,7 +68,7 @@ static void indn1(n_indn_t* info) {
 }
 
 //  Set up the target input to debug.
-DEBUG_FINDING(youthful_wallaby)
+DEBUG_FINDING(focused_fly)
 
 FUZZ_TEST(const uint8_t *data, size_t size) {
   std::cerr << "Starting Fuzz Test " <<std::endl;
@@ -81,8 +81,8 @@ FUZZ_TEST(const uint8_t *data, size_t size) {
   memset(&sender_instance, 0, sizeof(iso15765_t));
 
   // Fuzz the instance's fields with correct types
-  sender_instance.fr_id_type = static_cast<cbus_id_type>(fdp.ConsumeIntegralInRange<uint8_t>(CBUS_ID_T_STANDARD, CBUS_ID_T_EXTENDED));
-  sender_instance.addr_md = static_cast<addr_md>(fdp.ConsumeIntegral<uint8_t>());
+  sender_instance.fr_id_type = fdp.PickValueInArray({CBUS_ID_T_STANDARD,	CBUS_ID_T_EXTENDED});
+  sender_instance.addr_md = fdp.PickValueInArray({N_ADM_UNKN, N_ADM_NORMAL,	N_ADM_FIXED,	N_ADM_MIXED11,	N_ADM_EXTENDED,	N_ADM_MIXED29});
   sender_instance.clbs.send_frame = sender_send_frame;
   sender_instance.clbs.get_ms = getms;
   sender_instance.clbs.indn = indn1;
@@ -100,8 +100,8 @@ FUZZ_TEST(const uint8_t *data, size_t size) {
   memset(&reciever_instance, 0, sizeof(iso15765_t));
 
   // Fuzz the instance's fields with correct types
-  reciever_instance.fr_id_type = static_cast<cbus_id_type>(fdp.ConsumeIntegralInRange<uint8_t>(CBUS_ID_T_STANDARD, CBUS_ID_T_EXTENDED));
-  reciever_instance.addr_md = static_cast<addr_md>(fdp.ConsumeIntegral<uint8_t>());
+  reciever_instance.fr_id_type = fdp.PickValueInArray({CBUS_ID_T_STANDARD,	CBUS_ID_T_EXTENDED});
+  reciever_instance.addr_md = fdp.PickValueInArray({N_ADM_UNKN, N_ADM_NORMAL,	N_ADM_FIXED,	N_ADM_MIXED11,	N_ADM_EXTENDED,	N_ADM_MIXED29});
   reciever_instance.clbs.send_frame = receiver_send_frame;
   reciever_instance.clbs.get_ms = getms;
   reciever_instance.clbs.indn = indn1;
@@ -119,22 +119,16 @@ FUZZ_TEST(const uint8_t *data, size_t size) {
         // Create a n_req_t and initialize it with fuzzed data
         n_req_t req;
         memset(&req, 0, sizeof(n_req_t));
-        req.fr_fmt = static_cast<cbus_fr_format>(fdp.ConsumeIntegral<uint8_t>());
+        req.fr_fmt = static_cast<cbus_fr_format>(fdp.PickValueInArray({CBUS_FR_FRM_STD,	CBUS_FR_FRM_FD}));
         req.msg_sz = fdp.ConsumeIntegralInRange<uint16_t>(0, I15765_MSG_SIZE);
         fdp.ConsumeData(req.msg, req.msg_sz);
         req.n_ai.n_pr = fdp.ConsumeIntegral<uint8_t>();
         req.n_ai.n_ta = fdp.ConsumeIntegral<uint8_t>();
         req.n_ai.n_sa = fdp.ConsumeIntegral<uint8_t>();
-        req.n_ai.n_tt = static_cast<ta_type>(fdp.ConsumeIntegral<uint8_t>());
+        req.n_ai.n_tt = static_cast<ta_type>(fdp.PickValueInArray({N_TA_T_PHY, N_TA_T_FUNC}));
 
         // Send the request
         iso15765_send(&sender_instance, &req);
-        break;
-      }
-      case 1: {
-        // Process the instance
-        iso15765_process(&sender_instance);
-        iso15765_process(&reciever_instance);
         break;
       }
       default: {

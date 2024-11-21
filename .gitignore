@@ -12,9 +12,9 @@ lcov.info
 !.cifuzz-findings/
 
 .cifuzz-findings/*
-!.cifuzz-findings/pedantic_hamster/
-.cifuzz-findings/pedantic_hamster/.lock
-!.cifuzz-findings/thoughtful_cheetah/
-.cifuzz-findings/thoughtful_cheetah/.lock
-!.cifuzz-findings/grinning_monkey/
-.cifuzz-findings/grinning_monkey/.lock
+!.cifuzz-findings/focused_fly/
+.cifuzz-findings/focused_fly/.lock
+!.cifuzz-findings/adventurous_crocodile/
+.cifuzz-findings/adventurous_crocodile/.lock
+!.cifuzz-findings/incredible_elk/
+.cifuzz-findings/incredible_elk/.lock
