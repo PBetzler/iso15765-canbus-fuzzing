@@ -68,7 +68,7 @@ static void indn1(n_indn_t* info) {
 }
 
 //  Set up the target input to debug.
-DEBUG_FINDING(focused_fly)
+DEBUG_FINDING(hopeful_kangaroo)
 
 FUZZ_TEST(const uint8_t *data, size_t size) {
   std::cerr << "Starting Fuzz Test " <<std::endl;
