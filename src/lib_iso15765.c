@@ -34,6 +34,7 @@ SOFTWARE.
 ******************************************************************************/
 
 #include "lib_iso15765.h"
+#include <stdio.h>
 
 /******************************************************************************
 * Enumerations, structures & Variables
@@ -344,7 +345,8 @@ inline static n_rslt n_pdu_unpack_dt(addr_md mode, n_pdu_t* n_pdu, uint8_t* dt)
 		{
 		case N_PCI_T_SF:
 			// TODO Fix stack buffer overflow caused probably by keeping state somewhere that breaks over time
-			memmove(n_pdu->dt, &dt[n_get_dt_offset(mode, N_PCI_T_SF, n_pdu->n_pci.dl)], n_pdu->n_pci.dl);
+			//memmove(n_pdu->dt, &dt[n_get_dt_offset(mode, N_PCI_T_SF, n_pdu->n_pci.dl)], n_pdu->n_pci.dl);
+			memmove(n_pdu->dt, &dt[n_get_dt_offset(mode, N_PCI_T_SF, 60)], 60);
 			result = N_OK;
 			break;
 		case N_PCI_T_FF:
@@ -788,6 +790,8 @@ inline static n_rslt iso15765_process_in(iso15765_t* ih, canbus_frame_t* frame)
  */
 static n_rslt iso15765_process_out(iso15765_t* ih)
 {
+	// fprintf(stderr, "Std min = %d\n", ih->config.stmin);
+	// exit(1);
 	/* if there is no pending action just return */
 	if (ih->out.sts != N_S_TX_BUSY && ih->out.sts != N_S_TX_READY)
 	{
