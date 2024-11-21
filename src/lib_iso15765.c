@@ -522,7 +522,7 @@ inline static void signaling(signal_tp tp, n_iostream_t* strm, void(*cb)(void*),
 inline static n_rslt process_timeouts(iso15765_t* ih)
 {
 	if (ih->out.sts != N_S_TX_WAIT_FC || ih->out.last_upd.n_bs == 0 || ih->config.n_bs == 0
-		|| (ih->out.last_upd.n_bs + ih->config.n_bs) >= ih->clbs.get_ms())
+		|| (ih->clbs.get_ms() - ih->config.n_bs) < ih->out.last_upd.n_bs)
 	{
 		return N_OK;
 	}
@@ -838,7 +838,7 @@ static n_rslt iso15765_process_out(iso15765_t* ih)
 
 	case N_PCI_T_CF:
 		/* if the minimun difference between transmissions is not reached then skip */
-		if ((ih->out.last_upd.n_cs + ih->config.stmin) > ih->clbs.get_ms())
+		if ((ih->clbs.get_ms() - ih->config.stmin) < ih->out.last_upd.n_cs)
 		{
 			return N_OK;
 		}
@@ -954,14 +954,18 @@ n_rslt iso15765_init(iso15765_t* instance)
 	memset(&instance->out, 0, sizeof(n_iostream_t));
 	memset(&instance->fl_pdu, 0, sizeof(n_pdu_t));
 	/* init the incoming canbus frame queue(buffer) */
-	iqueue_init(&instance->inqueue,
+	if (iqueue_init(&instance->inqueue,
 		I15765_QUEUE_ELMS,
 		sizeof(canbus_frame_t),
-		instance->inq_buf);
+		instance->inq_buf) != I_OK)
+		{
+			return N_INV;
+		}
 
 	ISO_15675_UNUSED(sgn_chg_cfm);
 
-	return N_OK;
+	instance->init_sts = N_OK;
+	return instance->init_sts;
 }
 
 /*
@@ -971,6 +975,16 @@ n_rslt iso15765_init(iso15765_t* instance)
  */
 n_rslt iso15765_enqueue(iso15765_t* instance, canbus_frame_t* frame)
 {
+	if (instance == NULL)
+	{
+		return N_NULL;
+	}
+
+	if (instance->init_sts != N_OK)
+	{
+		return N_ERROR;
+	}
+
 	return iqueue_enqueue(&instance->inqueue, frame) == I_OK
 		? N_OK : N_BUFFER_OVFLW;
 }
@@ -982,6 +996,16 @@ n_rslt iso15765_enqueue(iso15765_t* instance, canbus_frame_t* frame)
  */
 n_rslt iso15765_send(iso15765_t* instance, n_req_t* frame)
 {
+	if (instance == NULL)
+	{
+		return N_NULL;
+	}
+
+	if (instance->init_sts != N_OK)
+	{
+		return N_ERROR;
+	}
+
 	/* Make sure that there is no transmission in progress */
 	if (instance->out.sts != N_S_IDLE)
 	{
@@ -991,6 +1015,21 @@ n_rslt iso15765_send(iso15765_t* instance, n_req_t* frame)
 	if (frame->msg_sz > I15765_MSG_SIZE)
 	{
 		return N_BUFFER_OVFLW;
+	}
+	/* or there is not actual message to be sent */
+	if (frame->msg_sz == 0)
+	{
+		return N_INV_REQ_SZ;
+	}
+	/* check if frame type is correct */
+	if (frame->fr_fmt != CBUS_FR_FRM_STD && frame->fr_fmt != CBUS_FR_FRM_FD)
+	{
+		return N_INV;
+	}
+	/* check if Target Address Type is correct */
+	if (frame->n_ai.n_tt != N_TA_T_PHY && frame->n_ai.n_tt != N_TA_T_FUNC)
+	{
+		return N_INV;
 	}
 
 	/* copy all the info and data to the outbound buffer */
@@ -1010,6 +1049,16 @@ n_rslt iso15765_send(iso15765_t* instance, n_req_t* frame)
  */
 n_rslt iso15765_process(iso15765_t* instance)
 {
+	if (instance == NULL)
+	{
+		return N_NULL;
+	}
+
+	if (instance->init_sts != N_OK)
+	{
+		return N_ERROR;
+	}
+
 	/* First check if a timeout is occured. Only for the inbound stream */
 	n_rslt rslt = process_timeouts(instance);
 	canbus_frame_t frame;
